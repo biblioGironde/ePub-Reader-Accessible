@@ -299,3 +299,5 @@ html.no-motion * { animation: none !important; transition: none !important; }
 .cat-book .local { display: inline-block; margin-left: .4rem; font-size: .8rem; font-weight: 700; border: 1px solid currentColor; border-radius: .3rem; padding: 0 .35rem; }
 .cat-book .big-btn { min-height: 2.75rem; padding: .4rem .9rem; font-size: 1rem; }
 .cat-book .big-btn[aria-busy="true"] { opacity: .7; cursor: progress; }
+.cat-bac { display: flex; flex-wrap: wrap; gap: .25rem 1rem; }
+.cat-bac .field { flex: 1 1 14rem; margin: 0 0 .75rem; }

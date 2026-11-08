@@ -1,5 +1,5 @@
 /* Service worker : la liseuse fonctionne hors connexion après la première visite. */
-const CACHE = "liseuse-v1.1.0";
+const CACHE = "liseuse-v1.2.0";
 const ASSETS = [
   "./",
   "css/app.css",

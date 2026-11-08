@@ -40,7 +40,9 @@
 
   const $ = (s) => document.querySelector(s);
   const L = () => window.__liseuse;
-  const ui = { list: $("#cat-list"), status: $("#cat-status"), filter: $("#cat-filter"), refresh: $("#cat-refresh") };
+  const ui = { list: $("#cat-list"), status: $("#cat-status"), filter: $("#cat-filter"), refresh: $("#cat-refresh"),
+    bac: $("#cat-bac"), session: $("#cat-session"), voie: $("#cat-voie") };
+  const bacPrefs = LPrefs.get("liseuse.cat.bac", { session: null, voie: "" });
   let current = LPrefs.get("liseuse.cat.source", "classiques");
   if (!SOURCES[current]) current = "classiques";
   const data = {};          // id -> { livres, maj, horsLigne }
@@ -74,6 +76,30 @@
   const esc = (t) => String(t).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const rawUrl = (src, path) => `https://raw.githubusercontent.com/${src.depot}/${src.branche}/${path.split("/").map(encodeURIComponent).join("/")}`;
   const taille = (o) => o ? (o > 1048576 ? (o / 1048576).toFixed(1).replace(".", ",") + " Mo" : Math.max(1, Math.round(o / 1024)) + " Ko") : "";
+
+  /* Colonne « bac » des dépôts : années de session, « 2027 » ou « 2023-2026 » (bornes comprises) */
+  function sessionsOf(v) {
+    const m = String(v || "").match(/(\d{4})(?:\s*[-–]\s*(\d{4}))?/);
+    if (!m) return [];
+    const a = +m[1], b = m[2] ? +m[2] : a, out = [];
+    for (let y = a; y <= b && out.length < 30; y++) out.push(y);
+    return out;
+  }
+  function voieLabel(v) { return v === "G" ? "voie générale" : v === "T" ? "voie technologique" : "voies générale et technologique"; }
+  // Session du bac de l'année scolaire en cours (de septembre à août)
+  function currentSession() { const d = new Date(); return d.getMonth() >= 8 ? d.getFullYear() + 1 : d.getFullYear(); }
+
+  function fillSessions(livres) {
+    const all = [...new Set(livres.flatMap(l => l.sessions))].sort((a, b) => b - a);
+    let want = bacPrefs.session;
+    if (want == null) want = all.includes(currentSession()) ? String(currentSession()) : "";
+    const opts = ['<option value="">Toutes les années</option>'].concat(all.map(y =>
+      `<option value="${y}">Bac ${y} — année scolaire ${y - 1}-${y}${y === currentSession() ? " (en cours)" : ""}</option>`));
+    const html = opts.join("");
+    if (ui.session.innerHTML !== html) ui.session.innerHTML = html;
+    ui.session.value = all.map(String).includes(String(want)) ? String(want) : "";
+    ui.voie.value = bacPrefs.voie || "";
+  }
 
   /* ---------- Chargement d'une source ---------- */
   async function loadTree(id, src) {
@@ -121,7 +147,9 @@
         auteur: r ? r.auteur : a,
         titre: r ? r.titre : (t.join(" - ") || base),
         annee: r ? r.annee : "",
-        note: r && r.bac ? `Bac ${r.bac}${r.programme ? " · " + r.programme : ""}` : "",
+        note: r && r.bac ? `Bac ${r.bac}${r.voie ? " · " + voieLabel(r.voie) : ""}${r.programme ? " · " + r.programme : ""}` : "",
+        sessions: r ? sessionsOf(r.bac) : [],
+        voie: r ? (r.voie || "") : "",
         size: f.size
       };
     });
@@ -132,12 +160,12 @@
     });
     const entry = { livres, maj: Date.now() };
     data[id] = entry;
-    LPrefs.set("liseuse.cat.data." + id, entry);
+    LPrefs.set("liseuse.cat.data2." + id, entry);
     return entry;
   }
 
   async function ensure(id, force) {
-    const cached = data[id] || LPrefs.get("liseuse.cat.data." + id, null);
+    const cached = data[id] || LPrefs.get("liseuse.cat.data2." + id, null);
     if (cached) data[id] = cached;
     const stale = !cached || Date.now() - cached.maj > MAX_AGE;
     if (cached) render();
@@ -168,15 +196,24 @@
     const src = SOURCES[current]; const d = data[current];
     document.querySelectorAll(".cat-tab").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.source === current)));
     if (!d) { ui.list.innerHTML = ""; return; }
+    const isBac = current === "bac";
+    ui.bac.hidden = !isBac;
+    if (isBac) fillSessions(d.livres);
+    const session = isBac ? ui.session.value : "", voie = isBac ? ui.voie.value : "";
     const q = sansAccents(ui.filter.value).toLowerCase();
-    const items = q ? d.livres.filter(l => sansAccents(l.titre + " " + l.auteur).toLowerCase().includes(q)) : d.livres;
+    const items = d.livres.filter(l =>
+      (!q || sansAccents(l.titre + " " + l.auteur).toLowerCase().includes(q)) &&
+      (!session || (l.sessions || []).includes(+session)) &&
+      (!voie || !l.voie || l.voie.includes(voie)));
+    const filtered = !!(q || session || voie);
     const date = new Date(d.maj).toLocaleString("fr-FR", { dateStyle: "short", timeStyle: "short" });
-    setStatus(`${items.length} livre${items.length > 1 ? "s" : ""}${q ? " trouvé" + (items.length > 1 ? "s" : "") : ""} · liste vérifiée le ${date}${d.horsLigne ? " (hors connexion : liste enregistrée)" : ""}`);
+    const crit = session ? ` au programme du bac ${session}` : "";
+    setStatus(`${items.length} livre${items.length > 1 ? "s" : ""}${crit}${voie ? ", " + voieLabel(voie) : ""}${filtered && !crit ? " trouvé" + (items.length > 1 ? "s" : "") : ""} · liste vérifiée le ${date}${d.horsLigne ? " (hors connexion : liste enregistrée)" : ""}`);
     const groups = new Map();
     items.forEach(l => { if (!groups.has(l.groupe)) groups.set(l.groupe, []); groups.get(l.groupe).push(l); });
     const open = new Set([...ui.list.querySelectorAll("details[open]")].map(x => x.dataset.g));
     ui.list.innerHTML = [...groups.entries()].map(([g, livres]) => `
-      <details data-g="${esc(g)}"${q || open.has(g) ? " open" : ""}>
+      <details data-g="${esc(g)}"${filtered || open.has(g) ? " open" : ""}>
         <summary>${esc(src.groupes[g] || g)} <span class="n">(${livres.length})</span></summary>
         <ul>${livres.map(l => {
           const here = localRemotes.has(l.remote);
@@ -220,6 +257,8 @@
     ui.filter.value = ""; render(); ensure(current);
   }));
   ui.filter.addEventListener("input", render);
+  ui.session.addEventListener("change", () => { bacPrefs.session = ui.session.value; LPrefs.set("liseuse.cat.bac", bacPrefs); render(); });
+  ui.voie.addEventListener("change", () => { bacPrefs.voie = ui.voie.value; LPrefs.set("liseuse.cat.bac", bacPrefs); render(); });
   ui.refresh.addEventListener("click", () => ensure(current, true));
   ui.list.addEventListener("click", (e) => { const b = e.target.closest("button[data-remote]"); if (b) openBook(b); });
   // Retour sur l'onglet : on vérifie les nouveautés si la liste date un peu

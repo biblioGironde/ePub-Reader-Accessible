@@ -27,7 +27,7 @@ La page d'accueil propose directement les livres des dépôts
 et [Kit-Liseuses-Classiques-au-bac](https://github.com/biblioGironde/Kit-Liseuses-Classiques-au-bac),
 classés par siècle ou par objet d'étude du bac, avec une recherche par titre ou auteur. Un bouton **Lire** télécharge le livre et l'ouvre ; il reste ensuite disponible hors connexion.
 
-La liste se met à jour toute seule : à chaque visite (au plus toutes les 10 minutes, ou avec le bouton « Actualiser la liste »), la liseuse relit la liste des fichiers `epub/*/*.epub` de chaque dépôt et son `catalogue.csv` (titres accentués, années, programme du bac). Ajouter, retirer ou renommer un EPUB dans un dépôt suffit, rien à modifier ici. Pour ajouter une autre collection, compléter `SOURCES` dans `webapp/js/catalogue.js`.
+La liste se met à jour toute seule : à chaque visite (au plus toutes les 10 minutes, ou avec le bouton « Actualiser la liste »), la liseuse relit la liste des fichiers `epub/*/*.epub` de chaque dépôt et son `catalogue.csv` (titres accentués, années, programme du bac). Ajouter, retirer ou renommer un EPUB dans un dépôt suffit, rien à modifier ici. Pour les Classiques au bac, deux filtres affinent la liste : **année du bac** (par défaut celle de l'année scolaire en cours, d'après la colonne `bac` du catalogue, ex. `2023-2026`) et **voie** (générale ou technologique, colonne `voie`). Pour ajouter une autre collection, compléter `SOURCES` dans `webapp/js/catalogue.js`.
 
 ## Fonctions d'accessibilité
 

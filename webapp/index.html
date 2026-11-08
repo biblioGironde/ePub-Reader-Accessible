@@ -98,6 +98,18 @@
         <button type="button" class="cat-tab" data-source="classiques" aria-pressed="true">Classiques en numérique</button>
         <button type="button" class="cat-tab" data-source="bac" aria-pressed="false">Classiques au bac</button>
       </div>
+      <div class="cat-bac" id="cat-bac" hidden>
+        <label class="field">Année du bac
+          <select id="cat-session"></select>
+        </label>
+        <label class="field">Voie
+          <select id="cat-voie">
+            <option value="">Générale et technologique</option>
+            <option value="G">Voie générale</option>
+            <option value="T">Voie technologique</option>
+          </select>
+        </label>
+      </div>
       <div class="cat-tools">
         <label for="cat-filter">Rechercher un titre ou un auteur</label>
         <div class="row">
