@@ -279,3 +279,23 @@ html.no-motion * { animation: none !important; transition: none !important; }
   .profile[aria-pressed="true"], .tb-btn[aria-pressed="true"] { forced-color-adjust: none; background: Highlight; color: HighlightText; }
 }
 @media print { .topbar, .bottombar, .tts-bar, .page-btn { display: none !important; } }
+
+/* ---------- Catalogue des dépôts biblio.gironde ---------- */
+.catalogue { margin-top: 2rem; }
+.cat-tabs { display: flex; flex-wrap: wrap; gap: .5rem; margin: 1rem 0; }
+.cat-tab { min-height: 2.9rem; padding: .5rem 1rem; border: 2px solid var(--accent); border-radius: var(--radius); background: var(--bg); color: var(--fg); font-weight: 700; cursor: pointer; }
+.cat-tab[aria-pressed="true"] { background: var(--accent); color: var(--accent-fg); }
+.cat-tools label { font-weight: 700; display: block; margin-bottom: .3rem; }
+.cat-tools .row { display: flex; flex-wrap: wrap; gap: .5rem; }
+.cat-tools input { flex: 1 1 14rem; min-height: 3rem; padding: .4rem .7rem; border: 2px solid var(--border); border-radius: var(--radius); background: var(--bg); }
+.cat-list details { border: 1px solid var(--border); border-radius: var(--radius); margin: .6rem 0; background: var(--panel); }
+.cat-list summary { cursor: pointer; padding: .8rem 1rem; font-weight: 700; font-size: 1.1rem; min-height: 2.9rem; }
+.cat-list summary .n { font-weight: 400; color: var(--muted); font-size: .95rem; }
+.cat-list ul { list-style: none; margin: 0; padding: 0 .5rem .5rem; }
+.cat-book { display: flex; align-items: center; gap: .75rem; padding: .55rem .5rem; border-top: 1px solid var(--border); }
+.cat-book .info { flex: 1; min-width: 0; }
+.cat-book .t { font-weight: 700; display: block; }
+.cat-book .a { color: var(--muted); font-size: .95rem; }
+.cat-book .local { display: inline-block; margin-left: .4rem; font-size: .8rem; font-weight: 700; border: 1px solid currentColor; border-radius: .3rem; padding: 0 .35rem; }
+.cat-book .big-btn { min-height: 2.75rem; padding: .4rem .9rem; font-size: 1rem; }
+.cat-book .big-btn[aria-busy="true"] { opacity: .7; cursor: progress; }

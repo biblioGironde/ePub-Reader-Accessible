@@ -20,6 +20,15 @@ Rien n'est envoyé sur Internet : les livres et les réglages restent sur l'appa
 > **macOS** : l'application n'est pas signée par Apple. Au premier lancement, faire clic droit › **Ouvrir**, ou dans le Terminal : `xattr -cr "/Applications/Liseuse accessible.app"`.
 > **Windows** : si SmartScreen s'affiche, cliquer sur « Informations complémentaires » › « Exécuter quand même ».
 
+## Les classiques de biblio.gironde
+
+La page d'accueil propose directement les livres des dépôts
+[Kit-Liseuses-Les-Classiques-En-Numerique](https://github.com/biblioGironde/Kit-Liseuses-Les-Classiques-En-Numerique)
+et [Kit-Liseuses-Classiques-au-bac](https://github.com/biblioGironde/Kit-Liseuses-Classiques-au-bac),
+classés par siècle ou par objet d'étude du bac, avec une recherche par titre ou auteur. Un bouton **Lire** télécharge le livre et l'ouvre ; il reste ensuite disponible hors connexion.
+
+La liste se met à jour toute seule : à chaque visite (au plus toutes les 10 minutes, ou avec le bouton « Actualiser la liste »), la liseuse relit la liste des fichiers `epub/*/*.epub` de chaque dépôt et son `catalogue.csv` (titres accentués, années, programme du bac). Ajouter, retirer ou renommer un EPUB dans un dépôt suffit, rien à modifier ici. Pour ajouter une autre collection, compléter `SOURCES` dans `webapp/js/catalogue.js`.
+
 ## Fonctions d'accessibilité
 
 Un bouton **Accessibilité** (touche `A`), toujours visible, ouvre le panneau de réglages. Trois **profils** s'activent d'un clic et se combinent ; chaque réglage reste ensuite ajustable un par un.

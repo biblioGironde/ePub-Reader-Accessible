@@ -242,7 +242,7 @@
   /* =========================================================
      Ouverture d'un livre
      ========================================================= */
-  async function openBuffer(buffer, fileName) {
+  async function openBuffer(buffer, fileName, remote) {
     try {
       closeBook();
       showReader(true);
@@ -261,7 +261,7 @@
 
       let meta = await LStore.get(id);
       if (!meta) {
-        meta = { id, title, author, lang: S.lang, addedAt: Date.now(), openedAt: Date.now(), lastCfi: null, progress: 0, bookmarks: [] };
+        meta = { id, title, author, lang: S.lang, addedAt: Date.now(), openedAt: Date.now(), lastCfi: null, progress: 0, bookmarks: [], remote: remote || null };
         try {
           const url = await book.coverUrl();
           if (url) meta.cover = await (await fetch(url)).blob();
@@ -269,6 +269,7 @@
         await LStore.save(meta, buffer);
       } else {
         meta.openedAt = Date.now();
+        if (remote && !meta.remote) meta.remote = remote;
         await LStore.save(meta);
       }
       S.meta = meta; S.bookmarks = meta.bookmarks || [];
@@ -821,6 +822,7 @@
       li.append(open, del); ui.libList.appendChild(li);
     });
     $("#lib-title").tabIndex = -1;
+    if (window.LCatalogue) LCatalogue.markLocal(books);
   }
 
   async function openFile(file) {
@@ -875,5 +877,5 @@
 
   applyUI(LSettings.get());
   renderLibrary();
-  window.__liseuse = { S, tts, openBuffer }; // pour les tests
+  window.__liseuse = { S, tts, openBuffer, announce, errorMsg, renderLibrary }; // catalogue en ligne + tests
 })();

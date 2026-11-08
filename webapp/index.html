@@ -91,6 +91,24 @@
     </div>
     <p class="hint">Besoin d'aide pour lire ? Le bouton <strong>Accessibilité</strong>, en haut, adapte l'affichage pour les personnes malvoyantes, malentendantes ou dys.</p>
 
+    <section aria-labelledby="cat-title" class="catalogue" id="catalogue">
+      <h2 id="cat-title">Les classiques de biblio.gironde</h2>
+      <p>Des grands textes libres de droits, à lire directement ici. La liste suit automatiquement les dépôts <a href="https://github.com/biblioGironde/Kit-Liseuses-Les-Classiques-En-Numerique" target="_blank" rel="noopener">Classiques en numérique</a> et <a href="https://github.com/biblioGironde/Kit-Liseuses-Classiques-au-bac" target="_blank" rel="noopener">Classiques au bac</a>.</p>
+      <div class="cat-tabs" role="group" aria-label="Collection">
+        <button type="button" class="cat-tab" data-source="classiques" aria-pressed="true">Classiques en numérique</button>
+        <button type="button" class="cat-tab" data-source="bac" aria-pressed="false">Classiques au bac</button>
+      </div>
+      <div class="cat-tools">
+        <label for="cat-filter">Rechercher un titre ou un auteur</label>
+        <div class="row">
+          <input type="search" id="cat-filter" autocomplete="off">
+          <button type="button" class="big-btn" id="cat-refresh">Actualiser la liste</button>
+        </div>
+      </div>
+      <p id="cat-status" class="small" role="status"></p>
+      <div id="cat-list" class="cat-list"></div>
+    </section>
+
     <section aria-labelledby="lib-title" class="library">
       <h2 id="lib-title">Mes livres récents</h2>
       <p id="lib-empty">Aucun livre pour l'instant.</p>
@@ -329,5 +347,6 @@
 <script src="js/settings.js"></script>
 <script src="js/tts.js"></script>
 <script src="js/app.js"></script>
+<script src="js/catalogue.js"></script>
 </body>
 </html>
