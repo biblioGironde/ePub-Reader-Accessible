@@ -1,0 +1,33 @@
+# Construit l'application de bureau pour Windows, macOS et Linux
+# et publie les fichiers dans une Release GitHub.
+# Déclenchement : pousser une étiquette de version, par exemple :
+#   git tag v1.0.0 && git push origin v1.0.0
+name: Releases Electron
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm install
+      - name: Construction et publication
+        run: npx electron-builder --publish always
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CSC_IDENTITY_AUTO_DISCOVERY: "false"

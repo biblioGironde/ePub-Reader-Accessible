@@ -1,0 +1,4 @@
+Polices sous SIL Open Font License 1.1 (https://openfontlicense.org), copiées depuis Fontsource :
+- Atkinson Hyperlegible — Braille Institute of America
+- Lexend — The Lexend Project Authors
+- OpenDyslexic — Abbie Gonzalez

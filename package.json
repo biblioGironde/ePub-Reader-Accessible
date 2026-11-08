@@ -1,0 +1,126 @@
+{
+  "name": "liseuse-accessible",
+  "productName": "Liseuse accessible",
+  "version": "1.0.0",
+  "description": "Liseuse EPUB accessible (malvoyants, malentendants, publics dys) — webapp et application de bureau.",
+  "author": {
+    "name": "biblio.gironde",
+    "url": "https://github.com/biblioGironde"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/biblioGironde/ePub-Reader-Accessible",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/biblioGironde/ePub-Reader-Accessible.git"
+  },
+  "main": "electron/main.js",
+  "scripts": {
+    "start": "electron .",
+    "web": "npx --yes http-server webapp -p 8080 -c-1",
+    "exemple": "python3 outils/creer-exemple.py",
+    "dist": "electron-builder",
+    "dist:win": "electron-builder --win",
+    "dist:mac": "electron-builder --mac",
+    "dist:linux": "electron-builder --linux"
+  },
+  "devDependencies": {
+    "electron": "^45.2.3",
+    "electron-builder": "^26.18.0"
+  },
+  "build": {
+    "appId": "fr.gironde.biblio.liseuse",
+    "productName": "Liseuse accessible",
+    "artifactName": "Liseuse-accessible-${version}-${os}-${arch}.${ext}",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "electron/**/*",
+      "webapp/**/*",
+      "build/icon.png",
+      "package.json"
+    ],
+    "fileAssociations": [
+      {
+        "ext": "epub",
+        "name": "Livre EPUB",
+        "description": "Livre numérique EPUB",
+        "mimeType": "application/epub+zip",
+        "role": "Viewer"
+      }
+    ],
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ],
+      "category": "public.app-category.education",
+      "icon": "build/icon.png",
+      "identity": null
+    },
+    "dmg": {
+      "title": "Liseuse accessible ${version}"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "shortcutName": "Liseuse accessible",
+      "artifactName": "Liseuse-accessible-${version}-installation-windows.${ext}"
+    },
+    "portable": {
+      "artifactName": "Liseuse-accessible-${version}-portable-windows.${ext}"
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "category": "Education",
+      "icon": "build/icon.png",
+      "maintainer": "biblio.gironde",
+      "synopsis": "Liseuse EPUB accessible",
+      "syncDesktopName": true
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "biblioGironde",
+        "repo": "ePub-Reader-Accessible",
+        "releaseType": "release"
+      }
+    ]
+  },
+  "desktopName": "liseuse-accessible.desktop"
+}

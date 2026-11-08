@@ -1,0 +1,11 @@
+/* Polices d'accessibilité embarquées (SIL Open Font License 1.1) — fonctionnent hors ligne.
+   Atkinson Hyperlegible : conçue pour les personnes malvoyantes (Braille Institute).
+   Lexend : conçue pour réduire la fatigue visuelle et faciliter la lecture.
+   OpenDyslexic : police à empattement lesté, pensée pour les lecteurs dyslexiques. */
+@font-face { font-family: "Atkinson Hyperlegible"; font-style: normal; font-weight: 400; font-display: swap; src: url("../fonts/atkinson-hyperlegible-latin-400-normal.woff2") format("woff2"); }
+@font-face { font-family: "Atkinson Hyperlegible"; font-style: normal; font-weight: 700; font-display: swap; src: url("../fonts/atkinson-hyperlegible-latin-700-normal.woff2") format("woff2"); }
+@font-face { font-family: "Lexend"; font-style: normal; font-weight: 400; font-display: swap; src: url("../fonts/lexend-latin-400-normal.woff2") format("woff2"); }
+@font-face { font-family: "Lexend"; font-style: normal; font-weight: 700; font-display: swap; src: url("../fonts/lexend-latin-700-normal.woff2") format("woff2"); }
+@font-face { font-family: "OpenDyslexic"; font-style: normal; font-weight: 400; font-display: swap; src: url("../fonts/opendyslexic-latin-400-normal.woff2") format("woff2"); }
+@font-face { font-family: "OpenDyslexic"; font-style: italic; font-weight: 400; font-display: swap; src: url("../fonts/opendyslexic-latin-400-italic.woff2") format("woff2"); }
+@font-face { font-family: "OpenDyslexic"; font-style: normal; font-weight: 700; font-display: swap; src: url("../fonts/opendyslexic-latin-700-normal.woff2") format("woff2"); }

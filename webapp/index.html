@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="fr" data-theme="clair">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Liseuse accessible</title>
+<meta name="description" content="Liseuse EPUB libre et accessible : malvoyants, malentendants, publics dys. Fonctionne hors ligne sur tous les navigateurs.">
+<meta name="theme-color" content="#1d3a5f">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="css/fonts.css">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+<!-- Pictogrammes (inline, décoratifs : aria-hidden sur chaque usage) -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h5v-6h4v6h5V10"/></symbol>
+  <symbol id="i-open" viewBox="0 0 24 24"><path d="M3 7h6l2 2h10v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M12 17v-6m-3 3 3-3 3 3"/></symbol>
+  <symbol id="i-toc" viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></symbol>
+  <symbol id="i-bookmark" viewBox="0 0 24 24"><path d="M6 3h12v18l-6-4-6 4z"/></symbol>
+  <symbol id="i-speak" viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11"/></symbol>
+  <symbol id="i-a11y" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="6.8" r="1.4"/><path d="M7 9.5l5 1 5-1M12 10.5v4l-2.5 4.5M12 14.5l2.5 4.5"/></symbol>
+  <symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6V14"/><circle cx="12" cy="17.3" r=".6"/></symbol>
+  <symbol id="i-prev" viewBox="0 0 24 24"><path d="m15 5-7 7 7 7"/></symbol>
+  <symbol id="i-next" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4v16l13-8z"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><path d="M7 4h3v16H7zM14 4h3v16h-3z"/></symbol>
+  <symbol id="i-stop" viewBox="0 0 24 24"><path d="M6 6h12v12H6z"/></symbol>
+  <symbol id="i-back" viewBox="0 0 24 24"><path d="M11 6 5 12l6 6M19 6l-6 6 6 6"/></symbol>
+  <symbol id="i-fwd" viewBox="0 0 24 24"><path d="m13 6 6 6-6 6M5 6l6 6-6 6"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-ear" viewBox="0 0 24 24"><path d="M7 9a5 5 0 0 1 10 0c0 3-3 4-3 7a3 3 0 0 1-5.5 1.5"/><path d="M10 9.5a2 2 0 0 1 4 0c0 1.2-1 1.7-1.5 2.3"/></symbol>
+  <symbol id="i-dys" viewBox="0 0 24 24"><path d="M4 19 8.5 5h1L14 19M5.6 14h6.8"/><path d="M17 5v14M15 5h4M15 19h4"/></symbol>
+  <symbol id="i-text" viewBox="0 0 24 24"><path d="M4 7V5h11v2M9.5 5v14M7.5 19h4"/><path d="M14 12v-1.5h7V12M17.5 10.5V19M16 19h3"/></symbol>
+</svg>
+
+<a class="skip" href="#home-title" id="skip-link">Aller au contenu principal</a>
+
+<header class="topbar" role="banner">
+  <button class="tb-btn" id="btn-home" type="button" aria-label="Bibliothèque (accueil)" title="Bibliothèque (Échap puis B)">
+    <svg aria-hidden="true"><use href="#i-home"/></svg><span class="lbl">Bibliothèque</span>
+  </button>
+  <div class="book-heading">
+    <p class="app-name" id="app-name">Liseuse accessible</p>
+    <p class="book-title" id="book-title" aria-live="polite"></p>
+  </div>
+  <nav class="toolbar" aria-label="Outils de lecture">
+    <button class="tb-btn reader-only" id="btn-toc" type="button" aria-haspopup="dialog" title="Table des matières (T)">
+      <svg aria-hidden="true"><use href="#i-toc"/></svg><span class="lbl">Sommaire</span>
+    </button>
+    <button class="tb-btn reader-only" id="btn-search" type="button" aria-haspopup="dialog" title="Rechercher (R)">
+      <svg aria-hidden="true"><use href="#i-search"/></svg><span class="lbl">Rechercher</span>
+    </button>
+    <button class="tb-btn reader-only" id="btn-bookmarks" type="button" aria-haspopup="dialog" title="Signets (S)">
+      <svg aria-hidden="true"><use href="#i-bookmark"/></svg><span class="lbl">Signets</span>
+    </button>
+    <button class="tb-btn reader-only" id="btn-tts" type="button" aria-pressed="false" title="Lecture à voix haute (L)">
+      <svg aria-hidden="true"><use href="#i-speak"/></svg><span class="lbl">Lire à voix haute</span>
+    </button>
+    <div class="size-group reader-only" role="group" aria-label="Taille du texte">
+      <button class="tb-btn sq" id="btn-smaller" type="button" title="Réduire le texte (−)"><span aria-hidden="true">A−</span><span class="sr">Réduire le texte</span></button>
+      <button class="tb-btn sq" id="btn-bigger" type="button" title="Agrandir le texte (+)"><span aria-hidden="true">A+</span><span class="sr">Agrandir le texte</span></button>
+    </div>
+    <button class="tb-btn a11y-btn" id="btn-a11y" type="button" aria-haspopup="dialog" title="Accessibilité et affichage (A)">
+      <svg aria-hidden="true"><use href="#i-a11y"/></svg><span class="lbl">Accessibilité</span>
+    </button>
+    <button class="tb-btn" id="btn-help" type="button" aria-haspopup="dialog" title="Aide et raccourcis (?)">
+      <svg aria-hidden="true"><use href="#i-help"/></svg><span class="lbl">Aide</span>
+    </button>
+  </nav>
+</header>
+
+<main id="main">
+  <!-- Accueil / bibliothèque -->
+  <section id="home" class="home" aria-labelledby="home-title">
+    <h1 id="home-title" tabindex="-1">Lire un livre numérique</h1>
+    <p class="lead">Ouvrez un fichier <abbr title="format standard des livres numériques">EPUB</abbr> depuis votre appareil. Rien n'est envoyé sur Internet : le livre reste sur cet appareil.</p>
+    <div class="dropzone" id="dropzone">
+      <svg aria-hidden="true" class="dz-ico"><use href="#i-open"/></svg>
+      <p class="dz-text">Glissez un fichier EPUB ici</p>
+      <p class="dz-or">ou</p>
+      <label class="big-btn primary" for="file-input">
+        <svg aria-hidden="true"><use href="#i-open"/></svg> Choisir un livre EPUB
+      </label>
+      <input type="file" id="file-input" accept=".epub,application/epub+zip" class="visually-hidden-input">
+      <button type="button" class="big-btn" id="btn-sample">Essayer avec un livre d'exemple</button>
+    </div>
+    <p class="hint">Besoin d'aide pour lire ? Le bouton <strong>Accessibilité</strong>, en haut, adapte l'affichage pour les personnes malvoyantes, malentendantes ou dys.</p>
+
+    <section aria-labelledby="lib-title" class="library">
+      <h2 id="lib-title">Mes livres récents</h2>
+      <p id="lib-empty">Aucun livre pour l'instant.</p>
+      <ul id="lib-list" class="lib-list"></ul>
+    </section>
+    <footer class="site-footer">
+      <p>Un bug, une idée ? <a href="https://github.com/biblioGironde/ePub-Reader-Accessible/issues/new?title=Retour%20de%20test%20%E2%80%94%20ePub%20Reader%20Accessible%20%28liseuse%29&amp;body=%2A%2ANom%20testeur%20%3A%2A%2A%0A%0A%2A%2ANom%20webApp/kit%20%28choisir%29%20%3A%2A%2A%0A-%20%5B%20%5D%20Kit%20Effets%20Sp%C3%A9ciaux%20%E2%80%93%20Atelier%20Fond%20Vert%0A-%20%5B%20%5D%20Kit%20bib-e-lots%20%E2%80%93%20Atelier%20Neva%20%28impression%203D%29%0A-%20%5B%20%5D%20Kit%20Les%20Classiques%20En%20Num%C3%A9rique%0A-%20%5B%20%5D%20Classiques%20En%20Num%C3%A9rique%20%E2%80%93%20Audio%0A-%20%5B%20%5D%20Classiques%20au%20bac%0A-%20%5B%20%5D%20G%C3%A9n%C3%A9rateur%20de%20programme%20QDNB%0A-%20%5B%20%5D%20Kit%20biblio.deco%20%E2%80%93%20kit%20Cricut%0A-%20%5B%20%5D%20Kit%20Brodeuse%20%28module%20Respira%29%0A-%20%5B%20%5D%20Kit%20Podcast%0A-%20%5B%20%5D%20Kit%20Livre%20Augment%C3%A9%0A-%20%5B%20%5D%20Liste%20VR%20vid%C3%A9o%20360%0A-%20%5Bx%5D%20ePub%20Reader%20Accessible%20%28liseuse%29%0A%0A%2A%2ANavigateur%20%3A%2A%2A%0A-%20%5B%20%5D%20Edge%0A-%20%5B%20%5D%20Chrome%0A-%20%5B%20%5D%20Firefox%0A%0A%2A%2AMat%C3%A9riel%20branch%C3%A9%20%3A%2A%2A%0A-%20%5B%20%5D%20Imprimante%0A-%20%5B%20%5D%20Liseuse%0A-%20%5B%20%5D%20Webcam%0A-%20%5B%20%5D%20Cricut%0A-%20%5B%20%5D%20Brodeuse%0A%0A%23%23%20Liste%20des%20bugs%0A%0A_Pour%20chaque%20bug%20%3A%20une%20capture%20d%27%C3%A9cran%20annot%C3%A9e%20%28glisser-d%C3%A9poser%20l%27image%20ici%29%20et%20le%20niveau%20du%20bug%20%28voir%20le%20tableau%20ci-dessous%29._%0A%0A%23%23%23%20Bug%201%0A-%20%2A%2ANiveau%20%3A%2A%2A%20Bloquant%20/%20Majeur%20/%20Mineur%20/%20Cosm%C3%A9tique%0A-%20%2A%2ADescription%20%3A%2A%2A%0A-%20%2A%2ACapture%20annot%C3%A9e%20%3A%2A%2A%0A%0A%23%23%23%20Bug%202%0A-%20%2A%2ANiveau%20%3A%2A%2A%0A-%20%2A%2ADescription%20%3A%2A%2A%0A-%20%2A%2ACapture%20annot%C3%A9e%20%3A%2A%2A%0A%0A%7C%20Niveau%20%7C%20D%C3%A9finition%20%7C%20Exemple%20%7C%0A%7C%20---%20%7C%20---%20%7C%20---%20%7C%0A%7C%20Bloquant%20%7C%20L%27atelier%20ne%20peut%20pas%20avoir%20lieu%20%7C%20L%27appli%20Electron%20ne%20s%27ouvre%20pas%20sous%20Windows%20%7C%0A%7C%20Majeur%20%7C%20Une%20fonction%20cl%C3%A9%20%C3%A9choue%2C%20contournement%20possible%20%7C%20L%27export%20audio%20%C3%A9choue%2C%20mais%20l%27enregistrement%20brut%20est%20r%C3%A9cup%C3%A9rable%20%7C%0A%7C%20Mineur%20%7C%20G%C3%AAne%20d%27usage%20ou%20d%27affichage%20%7C%20Bouton%20coup%C3%A9%20sur%20petit%20%C3%A9cran%20%7C%0A%7C%20Cosm%C3%A9tique%20%7C%20Faute%2C%20alignement%2C%20couleur%20%7C%20Coquille%20dans%20un%20libell%C3%A9%20%7C%0A%0A%23%23%20Id%C3%A9es%20d%27am%C3%A9lioration%20/%20d%27ajout%0A1.%20Id%C3%A9e%201%0A2.%20Id%C3%A9e%202%0A3.%20Id%C3%A9e%203%0A4.%20%E2%80%A6%0A" target="_blank" rel="noopener">Signaler un bug ou proposer une amélioration<span class="sr"> (s'ouvre dans un nouvel onglet)</span></a> (issue GitHub préremplie)</p>
+      <p class="small">Liseuse accessible — biblio.gironde · <a href="https://github.com/biblioGironde/ePub-Reader-Accessible" target="_blank" rel="noopener">Code source</a> · Logiciel libre</p>
+    </footer>
+  </section>
+
+  <!-- Liseuse -->
+  <section id="reader" class="reader" aria-labelledby="reader-h" hidden>
+    <h1 class="sr" id="reader-h">Lecture</h1>
+    <button class="page-btn prev" id="btn-prev" type="button" title="Page précédente (←)">
+      <svg aria-hidden="true"><use href="#i-prev"/></svg><span class="sr">Page précédente</span>
+    </button>
+    <div class="viewer-wrap" id="viewer-wrap">
+      <div id="viewer" class="viewer" tabindex="-1" role="document" aria-label="Texte du livre"></div>
+      <div id="ruler" class="ruler" aria-hidden="true" hidden><div class="ruler-top"></div><div class="ruler-band"></div><div class="ruler-bottom"></div></div>
+    </div>
+    <button class="page-btn next" id="btn-next" type="button" title="Page suivante (→)">
+      <svg aria-hidden="true"><use href="#i-next"/></svg><span class="sr">Page suivante</span>
+    </button>
+  </section>
+</main>
+
+<!-- Barre de lecture à voix haute -->
+<section id="tts-bar" class="tts-bar" aria-label="Lecture à voix haute" hidden>
+  <div class="tts-caption" id="tts-caption" aria-live="off"></div>
+  <div class="tts-controls">
+    <button type="button" class="tb-btn sq" id="tts-back" title="Phrase précédente"><svg aria-hidden="true"><use href="#i-back"/></svg><span class="sr">Phrase précédente</span></button>
+    <button type="button" class="tb-btn sq main" id="tts-play" title="Lecture / pause (Espace)"><svg aria-hidden="true"><use href="#i-pause"/></svg><span class="sr" id="tts-play-lbl">Pause</span></button>
+    <button type="button" class="tb-btn sq" id="tts-fwd" title="Phrase suivante"><svg aria-hidden="true"><use href="#i-fwd"/></svg><span class="sr">Phrase suivante</span></button>
+    <button type="button" class="tb-btn sq" id="tts-stop" title="Arrêter la lecture"><svg aria-hidden="true"><use href="#i-stop"/></svg><span class="sr">Arrêter la lecture</span></button>
+    <label class="tts-field">Vitesse <input type="range" id="tts-rate" min="0.5" max="1.6" step="0.1" value="0.9" aria-valuetext="0,9"></label>
+    <label class="tts-field">Voix <select id="tts-voice"></select></label>
+  </div>
+</section>
+
+<footer class="bottombar reader-only" id="bottombar">
+  <label for="progress" class="sr">Position dans le livre</label>
+  <input type="range" id="progress" min="0" max="100" step="0.1" value="0" disabled>
+  <p class="loc" id="loc-label" aria-live="off">—</p>
+</footer>
+
+<!-- Annonces pour lecteurs d'écran -->
+<div id="announcer" class="sr" aria-live="polite" aria-atomic="true"></div>
+<!-- Alerte visuelle (malentendants) -->
+<div id="visual-alert" class="visual-alert" role="status" hidden></div>
+
+<!-- ===== Panneaux (boîtes de dialogue natives : piège du focus et touche Échap) ===== -->
+<dialog id="dlg-toc" class="panel left" aria-labelledby="toc-h">
+  <div class="panel-head"><h2 id="toc-h">Sommaire</h2><button type="button" class="close" data-close><svg aria-hidden="true"><use href="#i-close"/></svg><span class="sr">Fermer le sommaire</span></button></div>
+  <nav aria-labelledby="toc-h"><ol id="toc-list" class="toc"></ol></nav>
+</dialog>
+
+<dialog id="dlg-search" class="panel left" aria-labelledby="search-h">
+  <div class="panel-head"><h2 id="search-h">Rechercher dans le livre</h2><button type="button" class="close" data-close><svg aria-hidden="true"><use href="#i-close"/></svg><span class="sr">Fermer la recherche</span></button></div>
+  <form id="search-form" class="search-form" role="search">
+    <label for="search-q">Mot ou expression</label>
+    <div class="row"><input type="search" id="search-q" autocomplete="off" required><button type="submit" class="big-btn primary">Chercher</button></div>
+  </form>
+  <p id="search-status" role="status"></p>
+  <ol id="search-results" class="results"></ol>
+</dialog>
+
+<dialog id="dlg-bookmarks" class="panel left" aria-labelledby="bm-h">
+  <div class="panel-head"><h2 id="bm-h">Signets</h2><button type="button" class="close" data-close><svg aria-hidden="true"><use href="#i-close"/></svg><span class="sr">Fermer les signets</span></button></div>
+  <button type="button" class="big-btn primary" id="bm-add"><svg aria-hidden="true"><use href="#i-bookmark"/></svg> Marquer cette page</button>
+  <p id="bm-empty">Aucun signet dans ce livre.</p>
+  <ul id="bm-list" class="results"></ul>
+</dialog>
+
+<dialog id="dlg-a11y" class="panel right wide" aria-labelledby="a11y-h">
+  <div class="panel-head"><h2 id="a11y-h">Accessibilité et affichage</h2><button type="button" class="close" data-close><svg aria-hidden="true"><use href="#i-close"/></svg><span class="sr">Fermer les réglages</span></button></div>
+
+  <section aria-labelledby="prof-h" class="profiles-sec">
+    <h3 id="prof-h">Profils d'accessibilité</h3>
+    <p class="small">Activez un ou plusieurs profils : les réglages adaptés s'appliquent d'un coup. Vous pouvez ensuite les ajuster un par un ci-dessous.</p>
+    <div class="profiles">
+      <button type="button" class="profile" data-profile="malvoyant" aria-pressed="false">
+        <svg aria-hidden="true"><use href="#i-eye"/></svg>
+        <span class="p-name">Malvoyants</span>
+        <span class="p-desc">Gros caractères, fort contraste, police lisible, lecture à voix haute</span>
+      </button>
+      <button type="button" class="profile" data-profile="malentendant" aria-pressed="false">
+        <svg aria-hidden="true"><use href="#i-ear"/></svg>
+        <span class="p-name">Malentendants</span>
+        <span class="p-desc">Sous-titres des vidéos, texte affiché pendant la lecture vocale, alertes visuelles</span>
+      </button>
+      <button type="button" class="profile" data-profile="dys" aria-pressed="false">
+        <svg aria-hidden="true"><use href="#i-dys"/></svg>
+        <span class="p-name">Dys</span>
+        <span class="p-desc">Police adaptée, texte aéré, aligné à gauche, règle de lecture</span>
+      </button>
+    </div>
+    <button type="button" class="link-btn" id="a11y-reset">Revenir aux réglages d'origine</button>
+  </section>
+
+  <form id="a11y-form" class="settings" onsubmit="return false">
+    <fieldset>
+      <legend>Couleurs et contraste</legend>
+      <div class="themes" role="radiogroup" aria-label="Thème de couleurs">
+        <label class="theme-chip t-clair"><input type="radio" name="theme" value="clair"> <span>Clair</span></label>
+        <label class="theme-chip t-creme"><input type="radio" name="theme" value="creme"> <span>Crème</span></label>
+        <label class="theme-chip t-sepia"><input type="radio" name="theme" value="sepia"> <span>Sépia</span></label>
+        <label class="theme-chip t-sombre"><input type="radio" name="theme" value="sombre"> <span>Sombre</span></label>
+        <label class="theme-chip t-contraste-jaune"><input type="radio" name="theme" value="contraste-jaune"> <span>Jaune sur noir</span></label>
+        <label class="theme-chip t-contraste-blanc"><input type="radio" name="theme" value="contraste-blanc"> <span>Blanc sur noir</span></label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Texte</legend>
+      <label class="field">Police de caractères
+        <select name="font">
+          <option value="editeur">Police du livre</option>
+          <option value="atkinson">Atkinson Hyperlegible (malvoyants)</option>
+          <option value="lexend">Lexend (lecture fluide)</option>
+          <option value="opendyslexic">OpenDyslexic (dyslexie)</option>
+          <option value="sans">Sans empattement (Verdana, Arial)</option>
+          <option value="serif">Avec empattement (Georgia)</option>
+        </select>
+      </label>
+      <label class="field range">Taille du texte <output name="fontSizeOut"></output>
+        <input type="range" name="fontSize" min="80" max="300" step="10">
+      </label>
+      <label class="field range">Interligne <output name="lineHeightOut"></output>
+        <input type="range" name="lineHeight" min="1" max="2.6" step="0.1">
+      </label>
+      <label class="field range">Espacement des lettres <output name="letterSpacingOut"></output>
+        <input type="range" name="letterSpacing" min="0" max="0.3" step="0.02">
+      </label>
+      <label class="field range">Espacement des mots <output name="wordSpacingOut"></output>
+        <input type="range" name="wordSpacing" min="0" max="0.6" step="0.04">
+      </label>
+      <label class="check"><input type="checkbox" name="bold"> Texte plus épais</label>
+      <label class="check"><input type="checkbox" name="alignLeft"> Aligner à gauche (pas de texte justifié)</label>
+      <label class="check"><input type="checkbox" name="noItalic"> Remplacer l'italique par du gras</label>
+      <label class="check"><input type="checkbox" name="noHyphens"> Ne pas couper les mots en fin de ligne</label>
+    </fieldset>
+
+    <fieldset>
+      <legend>Aides à la lecture (dys)</legend>
+      <label class="field">Règle de lecture
+        <select name="ruler">
+          <option value="off">Désactivée</option>
+          <option value="regle">Règle (bande colorée)</option>
+          <option value="masque">Masque (assombrit le reste de la page)</option>
+        </select>
+      </label>
+      <label class="check"><input type="checkbox" name="altWords"> Alterner la couleur des mots</label>
+      <label class="check"><input type="checkbox" name="bdpq"> Colorer les lettres qui se confondent (b, d, p, q)</label>
+      <p class="small" id="hl-support" hidden>Ces deux aides demandent un navigateur récent (Chrome, Edge, Safari 17.2+, Firefox 140+).</p>
+    </fieldset>
+
+    <fieldset>
+      <legend>Mise en page</legend>
+      <label class="field">Mode de lecture
+        <select name="flow">
+          <option value="paginated">Pages (tourner les pages)</option>
+          <option value="scrolled">Défilement continu</option>
+        </select>
+      </label>
+      <label class="field range">Largeur des lignes <output name="maxWidthOut"></output>
+        <input type="range" name="maxWidth" min="30" max="120" step="5">
+      </label>
+      <label class="check"><input type="checkbox" name="spread"> Deux pages côte à côte sur grand écran</label>
+    </fieldset>
+
+    <fieldset>
+      <legend>Son, vidéo et lecture vocale (malentendants)</legend>
+      <label class="check"><input type="checkbox" name="captions"> Afficher automatiquement les sous-titres des vidéos</label>
+      <label class="check"><input type="checkbox" name="ttsCaption"> Afficher en grand le texte lu par la voix</label>
+      <label class="check"><input type="checkbox" name="visualAlerts"> Signaler visuellement les contenus sonores et les changements de chapitre</label>
+      <label class="check"><input type="checkbox" name="ttsAutoBar"> Afficher la barre de lecture vocale en permanence</label>
+    </fieldset>
+
+    <fieldset>
+      <legend>Interface</legend>
+      <label class="field range">Taille de l'interface <output name="uiScaleOut"></output>
+        <input type="range" name="uiScale" min="1" max="1.6" step="0.1">
+      </label>
+      <label class="check"><input type="checkbox" name="strongFocus"> Contour de sélection très visible</label>
+      <label class="check"><input type="checkbox" name="reduceMotion"> Supprimer les animations</label>
+    </fieldset>
+
+    <div class="preview" aria-hidden="true">
+      <p class="preview-txt" id="preview-txt">Le Corbeau, honteux et confus, jura, mais un peu tard, qu'on ne l'y prendrait plus. — b d p q</p>
+    </div>
+  </form>
+
+  <section aria-labelledby="bookinfo-h" class="bookinfo" id="bookinfo-sec" hidden>
+    <h3 id="bookinfo-h">Accessibilité de ce livre</h3>
+    <div id="bookinfo"></div>
+  </section>
+</dialog>
+
+<dialog id="dlg-help" class="panel right" aria-labelledby="help-h">
+  <div class="panel-head"><h2 id="help-h">Aide</h2><button type="button" class="close" data-close><svg aria-hidden="true"><use href="#i-close"/></svg><span class="sr">Fermer l'aide</span></button></div>
+  <h3>Raccourcis clavier</h3>
+  <table class="keys">
+    <caption class="sr">Raccourcis clavier de la liseuse</caption>
+    <thead><tr><th scope="col">Touche</th><th scope="col">Action</th></tr></thead>
+    <tbody>
+      <tr><td><kbd>→</kbd> ou <kbd>Page suiv.</kbd></td><td>Page suivante</td></tr>
+      <tr><td><kbd>←</kbd> ou <kbd>Page préc.</kbd></td><td>Page précédente</td></tr>
+      <tr><td><kbd>T</kbd></td><td>Sommaire</td></tr>
+      <tr><td><kbd>R</kbd></td><td>Rechercher</td></tr>
+      <tr><td><kbd>S</kbd></td><td>Signets</td></tr>
+      <tr><td><kbd>L</kbd></td><td>Lire à voix haute / arrêter</td></tr>
+      <tr><td><kbd>Espace</kbd></td><td>Pause / reprise de la voix</td></tr>
+      <tr><td><kbd>A</kbd></td><td>Réglages d'accessibilité</td></tr>
+      <tr><td><kbd>+</kbd> / <kbd>−</kbd></td><td>Agrandir / réduire le texte</td></tr>
+      <tr><td><kbd>Alt</kbd> + <kbd>↑</kbd> <kbd>↓</kbd></td><td>Déplacer la règle de lecture</td></tr>
+      <tr><td><kbd>B</kbd></td><td>Retour à la bibliothèque</td></tr>
+      <tr><td><kbd>?</kbd></td><td>Cette aide</td></tr>
+      <tr><td><kbd>Échap</kbd></td><td>Fermer un panneau</td></tr>
+    </tbody>
+  </table>
+  <h3>Sur écran tactile</h3>
+  <p>Faites glisser le doigt vers la gauche ou la droite pour tourner les pages, ou utilisez les grandes flèches de chaque côté.</p>
+  <h3>Lecture à voix haute</h3>
+  <p>La voix utilisée est celle de votre appareil. Si aucune voix française n'apparaît, installez-en une dans les réglages de langue de votre système.</p>
+  <h3>Confidentialité</h3>
+  <p>Vos livres et réglages restent enregistrés sur cet appareil uniquement.</p>
+  <h3>Un bug, une idée ?</h3>
+  <p><a href="https://github.com/biblioGironde/ePub-Reader-Accessible/issues/new?title=Retour%20de%20test%20%E2%80%94%20ePub%20Reader%20Accessible%20%28liseuse%29&amp;body=%2A%2ANom%20testeur%20%3A%2A%2A%0A%0A%2A%2ANom%20webApp/kit%20%28choisir%29%20%3A%2A%2A%0A-%20%5B%20%5D%20Kit%20Effets%20Sp%C3%A9ciaux%20%E2%80%93%20Atelier%20Fond%20Vert%0A-%20%5B%20%5D%20Kit%20bib-e-lots%20%E2%80%93%20Atelier%20Neva%20%28impression%203D%29%0A-%20%5B%20%5D%20Kit%20Les%20Classiques%20En%20Num%C3%A9rique%0A-%20%5B%20%5D%20Classiques%20En%20Num%C3%A9rique%20%E2%80%93%20Audio%0A-%20%5B%20%5D%20Classiques%20au%20bac%0A-%20%5B%20%5D%20G%C3%A9n%C3%A9rateur%20de%20programme%20QDNB%0A-%20%5B%20%5D%20Kit%20biblio.deco%20%E2%80%93%20kit%20Cricut%0A-%20%5B%20%5D%20Kit%20Brodeuse%20%28module%20Respira%29%0A-%20%5B%20%5D%20Kit%20Podcast%0A-%20%5B%20%5D%20Kit%20Livre%20Augment%C3%A9%0A-%20%5B%20%5D%20Liste%20VR%20vid%C3%A9o%20360%0A-%20%5Bx%5D%20ePub%20Reader%20Accessible%20%28liseuse%29%0A%0A%2A%2ANavigateur%20%3A%2A%2A%0A-%20%5B%20%5D%20Edge%0A-%20%5B%20%5D%20Chrome%0A-%20%5B%20%5D%20Firefox%0A%0A%2A%2AMat%C3%A9riel%20branch%C3%A9%20%3A%2A%2A%0A-%20%5B%20%5D%20Imprimante%0A-%20%5B%20%5D%20Liseuse%0A-%20%5B%20%5D%20Webcam%0A-%20%5B%20%5D%20Cricut%0A-%20%5B%20%5D%20Brodeuse%0A%0A%23%23%20Liste%20des%20bugs%0A%0A_Pour%20chaque%20bug%20%3A%20une%20capture%20d%27%C3%A9cran%20annot%C3%A9e%20%28glisser-d%C3%A9poser%20l%27image%20ici%29%20et%20le%20niveau%20du%20bug%20%28voir%20le%20tableau%20ci-dessous%29._%0A%0A%23%23%23%20Bug%201%0A-%20%2A%2ANiveau%20%3A%2A%2A%20Bloquant%20/%20Majeur%20/%20Mineur%20/%20Cosm%C3%A9tique%0A-%20%2A%2ADescription%20%3A%2A%2A%0A-%20%2A%2ACapture%20annot%C3%A9e%20%3A%2A%2A%0A%0A%23%23%23%20Bug%202%0A-%20%2A%2ANiveau%20%3A%2A%2A%0A-%20%2A%2ADescription%20%3A%2A%2A%0A-%20%2A%2ACapture%20annot%C3%A9e%20%3A%2A%2A%0A%0A%7C%20Niveau%20%7C%20D%C3%A9finition%20%7C%20Exemple%20%7C%0A%7C%20---%20%7C%20---%20%7C%20---%20%7C%0A%7C%20Bloquant%20%7C%20L%27atelier%20ne%20peut%20pas%20avoir%20lieu%20%7C%20L%27appli%20Electron%20ne%20s%27ouvre%20pas%20sous%20Windows%20%7C%0A%7C%20Majeur%20%7C%20Une%20fonction%20cl%C3%A9%20%C3%A9choue%2C%20contournement%20possible%20%7C%20L%27export%20audio%20%C3%A9choue%2C%20mais%20l%27enregistrement%20brut%20est%20r%C3%A9cup%C3%A9rable%20%7C%0A%7C%20Mineur%20%7C%20G%C3%AAne%20d%27usage%20ou%20d%27affichage%20%7C%20Bouton%20coup%C3%A9%20sur%20petit%20%C3%A9cran%20%7C%0A%7C%20Cosm%C3%A9tique%20%7C%20Faute%2C%20alignement%2C%20couleur%20%7C%20Coquille%20dans%20un%20libell%C3%A9%20%7C%0A%0A%23%23%20Id%C3%A9es%20d%27am%C3%A9lioration%20/%20d%27ajout%0A1.%20Id%C3%A9e%201%0A2.%20Id%C3%A9e%202%0A3.%20Id%C3%A9e%203%0A4.%20%E2%80%A6%0A" target="_blank" rel="noopener">Signaler un bug ou proposer une amélioration<span class="sr"> (s'ouvre dans un nouvel onglet)</span></a> (issue GitHub préremplie)</p>
+  <p class="small">Liseuse accessible — biblio.gironde. Logiciel libre.</p>
+</dialog>
+
+<script src="vendor/jszip.min.js"></script>
+<script src="vendor/epub.min.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/settings.js"></script>
+<script src="js/tts.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
