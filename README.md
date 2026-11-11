@@ -115,8 +115,8 @@ Après une modification de la webapp, augmenter la valeur `CACHE` en haut de `we
 
 ## Licences
 
-- Code de la liseuse : MIT.
-- [epub.js](https://github.com/futurepress/epub.js) : BSD-2-Clause. [JSZip](https://stuk.github.io/jszip/) : MIT ou GPLv3.
+- **Code** : © Département de la Gironde — biblio.gironde, sous licence [GNU Affero General Public License v3.0](LICENSE) ou ultérieure (AGPL-3.0-or-later). Vous pouvez le réutiliser et le modifier ; toute version modifiée, redistribuée ou mise en ligne, doit être publiée sous la même licence, avec son code source.
+- Bibliothèques intégrées : [epub.js](https://github.com/futurepress/epub.js) (BSD-2-Clause), [JSZip](https://stuk.github.io/jszip/) (MIT ou GPLv3).
 - Polices Atkinson Hyperlegible, Lexend, OpenDyslexic : SIL Open Font License 1.1.
 - Livre d'exemple : textes de Jean de La Fontaine (1668), domaine public.
 
