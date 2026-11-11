@@ -7,7 +7,7 @@
     "name": "biblio.gironde",
     "url": "https://github.com/biblioGironde"
   },
-  "license": "MIT",
+  "license": "AGPL-3.0-or-later",
   "homepage": "https://github.com/biblioGironde/ePub-Reader-Accessible",
   "repository": {
     "type": "git",
